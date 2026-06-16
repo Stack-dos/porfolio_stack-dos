@@ -142,6 +142,7 @@ Cada US de ahora en adelante debería contener:
     - `UserRepository`: `get_by_email`, `get_by_id`, `exists_by_email`, `save`.
     - `ClubRepository`: `get_all`, `get_by_id`, `save`, `link_user_to_club`, `get_clubs_by_user`.
     - `PlayerRepository`: `search_by_dni`, `get_by_id`, `search_by_name`, `get_club_history`, `get_active_club`, `save`, `link_to_club`.
+    - `CompetitionRepository`: `save_competencia`, `get_competencia_by_id`, `get_all_competencias`, `save_categoria`, `get_categorias`, `save_inscripcion`, `get_inscripcion_by_id`, `get_inscripciones_by_club`, `save_lista_buena_fe`, `get_lista_by_inscripcion`, `add_jugador_to_lista`, `get_jugadores_by_lista`.
     - `GameRepository`: `save_partido`, `save_boxscore`, `get_partidos_by_club`, `get_boxscore_by_partido`.
 - **Capa de Aplicación:** No aplica directamente (contratos de persistencia).
 - **Capa de Infraestructura:**
@@ -150,7 +151,8 @@ Cada US de ahora en adelante debería contener:
     - `connect()`: Activa `PRAGMA foreign_keys = ON`, configura `row_factory = sqlite3.Row`. Implementado para retornar la conexión activa si ya existe.
     - `initialize_schema()`: Ejecuta `schema.sql` y `views.sql` con `executescript()` en una sola llamada atómica.
   - **Implementaciones Concretas** (`src/infrastructure/persistence/`):
-    - `SQLiteUserRepository`, `SQLiteClubRepository`, `SQLitePlayerRepository`, `SQLiteGameRepository`.
+    - `SQLiteUserRepository`, `SQLiteClubRepository`, `SQLitePlayerRepository`, `SQLiteCompetitionRepository`, `SQLiteGameRepository`.
+    - `SQLiteCompetitionRepository` maneja las tablas `competencia`, `categoria`, `inscripcion`, `listaBuenaFe` y `jugadorListaBuenaFe` como un único agregado competitivo.
     - Cada repositorio realiza el mapeo manual de `sqlite3.Row` a las dataclasses de dominio mediante métodos privados `_row_to_entity()`.
 - **Base de Datos:** Tablas y vistas definidas en el Hito 1.
 - **Criterios de Aceptación Técnicos (DoD):**
@@ -162,7 +164,7 @@ Cada US de ahora en adelante debería contener:
 - **Reglas de Negocio / Validaciones:**
   - Validación de DNI duplicado al guardar un jugador (lanza `DominioException`).
   - Uso de `cursor.lastrowid` para retornar la entidad con el ID asignado por la base de datos.
-- **Entidades/Modelos Implicados:** `Usuario`, `Club`, `Jugador`, `Partido`, `EstadisticaJugadorPartido`.
+- **Entidades/Modelos Implicados:** `Usuario`, `Club`, `Jugador`, `JugadorClub`, `Competencia`, `Categoria`, `Inscripcion`, `ListaBuenaFe`, `JugadorListaBuenaFe`, `Partido`, `EstadisticaJugadorPartido`.
 - **Vistas SQL Necesarias:** `v_partidos_resumen` y `v_boxscore_completo` para optimizar las consultas de lectura en los repositorios.
 - **Pruebas Mínimas:**
   - **Integración (`tests/integration/test_repositories.py`):**
@@ -178,6 +180,7 @@ src/domain/interfaces/
 ├── user_repository.py
 ├── club_repository.py
 ├── player_repository.py
+├── competition_repository.py
 └── game_repository.py
 
 src/infrastructure/persistence/
@@ -185,6 +188,7 @@ src/infrastructure/persistence/
 ├── sqlite_user_repository.py
 ├── sqlite_club_repository.py
 ├── sqlite_player_repository.py
+├── sqlite_competition_repository.py
 └── sqlite_game_repository.py
 ```
 
@@ -196,7 +200,7 @@ src/infrastructure/persistence/
 - **Narrativa:** Como administrador, quiero disponer de casos de uso con lógica de negocio validada para gestionar el ciclo de vida de los jugadores y sus afiliaciones, así como la estructura de competencias y clubes.
 - **Capa de Dominio:**
   - **Entidades (`src/domain/entities/`):**
-    - `Usuario`, `Club`, `Jugador`, `JugadorClub` (historial N:M), `Competencia`, `Inscripcion`, `Partido`, `EstadisticaJugador`.
+    - `Usuario`, `Club`, `Jugador`, `JugadorClub` (historial N:M jugador-club), `Competencia`, `Categoria`, `Inscripcion`, `ListaBuenaFe`, `JugadorListaBuenaFe` (tabla de unión jugador-lista), `Partido`, `EstadisticaJugador`.
     - Las entidades son `@dataclass` puras, serializables y sin dependencias externas.
   - **Lógica de Validación:** Implementada en el método `__post_init__` de las entidades (ej: tiros convertidos <= lanzados, valores no negativos).
   - **Excepciones (`src/domain/exceptions.py`):** `JugadorDuplicadoError`, `ClubNoEncontradoError`, `UsuarioNoEncontradoError`, `CredencialesInvalidasError`, `VinculoActivoExistenteError`, etc.
@@ -242,7 +246,10 @@ src/domain/entities/
 ├── jugador.py
 ├── jugador_club.py
 ├── competencia.py
+├── categoria.py
 ├── inscripcion.py
+├── lista_buena_fe.py
+├── jugador_lista_buena_fe.py
 ├── partido.py
 └── estadistica_jugador.py
 

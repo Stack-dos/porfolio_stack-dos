@@ -709,13 +709,15 @@ Separar el acceso a datos por agregados de dominio bajo contratos tipados, garan
 \usfield{\faFolderOpen\ Archivos a Crear}
 \begin{itemize}[nosep, leftmargin=1.6em]
   \item \fpath{src/domain/repositories/user\_repository.py} — Interfaz abstracta (hereda de \fpath{ABC}). Define los métodos del repositorio de usuarios con \fpath{@abstractmethod}: \fpath{find\_by\_email}, \fpath{find\_by\_id}, \fpath{save}. Sin ninguna mención a SQLite.
-  \item \fpath{src/domain/repositories/club\_repository.py} — Contrato para clubes: \fpath{find\_by\_id}, \fpath{find\_by\_usuario}, \fpath{save}.
-  \item \fpath{src/domain/repositories/player\_repository.py} — Contrato para jugadores: \fpath{find\_by\_id}, \fpath{find\_by\_dni}, \fpath{find\_by\_club}, \fpath{save}.
-  \item \fpath{src/domain/repositories/game\_repository.py} — Contrato para partidos y boxscore: \fpath{save\_with\_boxscore} (transaccional), \fpath{find\_by\_club}, \fpath{find\_by\_id}.
+  \item \fpath{src/domain/repositories/club\_repository.py} — Contrato para clubes y la relación \fpath{usuarioClub}: \fpath{find\_by\_id}, \fpath{find\_by\_usuario}, \fpath{save}, \fpath{link\_user\_to\_club}.
+  \item \fpath{src/domain/repositories/player\_repository.py} — Contrato para jugadores y el historial \fpath{jugadorClub}: \fpath{find\_by\_id}, \fpath{find\_by\_dni}, \fpath{find\_by\_club}, \fpath{save}, \fpath{link\_to\_club}, \fpath{get\_active\_club}.
+  \item \fpath{src/domain/repositories/competition\_repository.py} — Contrato para el agregado competitivo (\fpath{competencia}, \fpath{categoria}, \fpath{inscripcion}, \fpath{listaBuenaFe}, \fpath{jugadorListaBuenaFe}): \fpath{save\_competencia}, \fpath{find\_competencia\_by\_id}, \fpath{get\_all\_competencias}, \fpath{save\_categoria}, \fpath{get\_categorias}, \fpath{save\_inscripcion}, \fpath{find\_inscripcion\_by\_id}, \fpath{get\_inscripciones\_by\_club}, \fpath{save\_lista\_buena\_fe}, \fpath{get\_lista\_by\_inscripcion}, \fpath{add\_jugador\_to\_lista}, \fpath{get\_jugadores\_by\_lista}.
+  \item \fpath{src/domain/repositories/game\_repository.py} — Contrato para partidos y boxscore (\fpath{partido}, \fpath{jugadorPartido}): \fpath{save\_with\_boxscore} (transaccional), \fpath{find\_by\_club}, \fpath{find\_by\_id}.
   \item \fpath{src/infrastructure/repositories/sqlite\_user\_repository.py} — Implementación concreta que hereda de \fpath{UserRepository}. Aquí vive el SQL real. Recibe un \fpath{SQLiteManager} en el constructor.
-  \item \fpath{src/infrastructure/repositories/sqlite\_club\_repository.py} — Ídem para clubes.
-  \item \fpath{src/infrastructure/repositories/sqlite\_player\_repository.py} — Ídem para jugadores.
-  \item \fpath{src/infrastructure/repositories/sqlite\_game\_repository.py} — Ídem para partidos. Implementa la transacción atómica de \fpath{save\_with\_boxscore}.
+  \item \fpath{src/infrastructure/repositories/sqlite\_club\_repository.py} — Ídem para clubes. Maneja \fpath{club} y la tabla de unión \fpath{usuarioClub}.
+  \item \fpath{src/infrastructure/repositories/sqlite\_player\_repository.py} — Ídem para jugadores. Maneja \fpath{jugador} y el historial \fpath{jugadorClub}.
+  \item \fpath{src/infrastructure/repositories/sqlite\_competition\_repository.py} — Maneja el agregado competitivo completo: \fpath{competencia}, \fpath{categoria}, \fpath{inscripcion}, \fpath{listaBuenaFe} y \fpath{jugadorListaBuenaFe}.
+  \item \fpath{src/infrastructure/repositories/sqlite\_game\_repository.py} — Ídem para partidos. Maneja \fpath{partido} y \fpath{jugadorPartido}. Implementa la transacción atómica de \fpath{save\_with\_boxscore}.
   \item \fpath{tests/integration/test\_repositories.py} — Tests CRUD contra SQLite \fpath{:memory:} para cada repositorio.
   \item \fpath{docs/arquitectura/01-repository-pattern.md} — Guía de estudio del patrón: qué es, por qué se usa, cómo agregar un repositorio nuevo al proyecto paso a paso.
 \end{itemize}
@@ -757,8 +759,11 @@ Implementar la lógica de negocio para la gestión de jugadores, clubes, compete
   \item \fpath{src/domain/entities/club.py} — Entidad club con nombre y asociación a usuarios. Validación de nombre no vacío.
   \item \fpath{src/domain/entities/jugador.py} — Entidad jugador con DNI, nombre, apellido y fecha de nacimiento. Método \fpath{calcular\_edad()} y validación de DNI.
   \item \fpath{src/domain/entities/jugador\_club.py} — Vínculo temporal entre jugador y club (fecha desde/hasta). Valida coherencia de fechas.
-  \item \fpath{src/domain/entities/competencia.py} — Competencia con nombre, categoría y temporada.
-  \item \fpath{src/domain/entities/inscripcion.py} — Inscripción de un club en una competencia. Unicidad por club+competencia+categoría+temporada.
+  \item \fpath{src/domain/entities/competencia.py} — Competencia con nombre y temporada (año).
+  \item \fpath{src/domain/entities/categoria.py} — Categoría deportiva (ej: U15, U17, Primera). Nombre y descripción.
+  \item \fpath{src/domain/entities/inscripcion.py} — Inscripción de un club en una competencia+categoría. Unicidad por club+competencia+categoría.
+  \item \fpath{src/domain/entities/lista\_buena\_fe.py} — Lista de buena fe asociada 1:1 a una inscripción.
+  \item \fpath{src/domain/entities/jugador\_lista\_buena\_fe.py} — Tabla de unión entre jugador y lista de buena fe. Representa la habilitación de un jugador para una inscripción específica.
   \item \fpath{src/domain/entities/partido.py} — Partido con clubs local/visitante, fecha y marcador. Valida que los clubs sean distintos.
   \item \fpath{src/domain/entities/estadistica\_jugador.py} — Los 20+ rubros del boxscore. Métodos de validación de consistencia (puntos, tiros convertidos/lanzados).
 \end{itemize}
