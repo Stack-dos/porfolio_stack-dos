@@ -1,5 +1,4 @@
-*.aux
-*.log
-*.toc
-*.gz
-*.out
+node_modules/
+dist/
+.astro/
+.env
