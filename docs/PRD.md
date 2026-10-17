@@ -169,6 +169,7 @@ Las decisiones se registran en `docs/adr/` (fuente única, plantilla en `docs/ad
 | [ADR-005](adr/ADR-005-documentacion-de-apps-en-la-wiki.md) | La wiki de cada app se arma a mano a partir de la documentación de su repo   |
 | [ADR-006](adr/ADR-006-estrategia-de-ramas.md)              | `feature/*` → `develop` → `main`, con hotfix desde `main`                    |
 | [ADR-007](adr/ADR-007-formato-del-cv.md)                   | CV web y PDF opcional hecho a mano, con estilos de impresión                 |
+| [ADR-008](adr/ADR-008-blog.md)                             | Blog de novedades con el plugin `starlight-blog`                             |
 
 ## 8. Métricas de éxito
 
@@ -269,6 +270,23 @@ Las decisiones se registran en `docs/adr/` (fuente única, plantilla en `docs/ad
   - Responsive a 360px sin scroll horizontal.
 - **Archivos a crear:** `src/components/`, `src/styles/custom.css`.
 
+#### US-204: Plugins de la wiki y metadatos para compartir
+
+- **Esfuerzo:** S · **Prioridad:** Media · **Dependencias:** US-201, US-203
+- **Objetivo funcional:** mejorar la calidad de la wiki y cómo se ve el sitio al compartirlo.
+- **Narrativa:** como visitante, quiero ver diagramas legibles, ampliar capturas y que el link se vea bien al compartirlo; como integrante, quiero que un link roto no llegue a producción.
+- **Detalle técnico:**
+  - `astro-mermaid`: diagramas Mermaid dentro del Markdown de la wiki.
+  - `starlight-links-validator`: el build falla si hay links internos rotos.
+  - `starlight-image-zoom`: zoom al hacer clic en imágenes.
+  - Metadatos Open Graph (`og:title`, `og:description`, `og:image`) en el layout del portfolio, con una imagen por defecto en `public/`. Starlight ya los genera en la wiki.
+- **Criterios de aceptación:**
+  - Un bloque ` ```mermaid ` se renderiza como diagrama en tema claro y oscuro.
+  - Un link interno roto hace fallar `npm run build`.
+  - Al pegar el link del sitio en LinkedIn o WhatsApp se ven título, descripción e imagen.
+  - Antes de instalar cada plugin se verifica que su `peerDependencies` soporte la versión de Astro y Starlight del proyecto.
+- **Archivos a modificar:** `package.json`, `astro.config.mjs`, layout del portfolio, `public/og.png`.
+
 ### Hito 3 — CI/CD y GitHub Pages
 
 **Épica:** cada merge a `main` publica el sitio y cada PR valida el build.
@@ -362,6 +380,12 @@ Las decisiones se registran en `docs/adr/` (fuente única, plantilla en `docs/ad
 - **US-502 — Historia / timeline del equipo** (S, Baja).
 - **US-503 — i18n en inglés** (L, Baja): habilitar `locales` en Starlight y traducir la landing y los CVs.
 - **US-504 — Wiki de VIN Decoder** (M, Media): primera app cargada con la plantilla de US-405.
+- **US-505 — Blog de novedades** (M, Media): sección `/blog/` con `starlight-blog` (ADR-008) para contar avances del equipo y publicar un posteo por cada versión de un proyecto (`v0.1`, `v0.2`... hasta la final, igual que el versionado del PRD).
+  - Posts en `src/content/docs/blog/<fecha>-<slug>.md`, con autor (integrante) y tags. Cada post de un proyecto lleva el tag con su slug (`stat-pro`) y, si es un release, el tag `release`.
+  - Convención de título para releases: `<Proyecto> vX.Y — <resumen>`; el cuerpo resume qué cambió y linkea a la wiki de la app.
+  - La página del proyecto en `/proyectos/` linkea a sus posts por tag.
+  - Feed RSS (lo incluye el plugin) y link "Blog" en el header.
+  - Criterios: un post nuevo aparece en `/blog/`, en su tag y en el RSS sin tocar código; el listado de un proyecto muestra solo sus posts.
 
 ## 11. Definición de Hecho (DoD)
 
@@ -386,6 +410,6 @@ Una historia está hecha cuando:
 | Versión | Contenido                                                                                     |
 | ------- | --------------------------------------------------------------------------------------------- |
 | v1.0.0  | Limpieza, sitio base, CI/CD, landing, CVs, proyectos, wiki de Stat Pro y guía de contribución |
-| v1.1.0  | Sección Stack y timeline                                                                      |
+| v1.1.0  | Sección Stack, timeline y blog de novedades                                                   |
 | v1.2.0  | Wiki de VIN Decoder                                                                           |
 | v2.0.0  | Sitio bilingüe (es/en)                                                                        |
