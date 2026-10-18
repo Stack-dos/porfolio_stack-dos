@@ -24,6 +24,8 @@ npm run build   # build de producción en dist/
 | Integrante/CV   | `src/content/integrantes/<slug>.md` |
 | Wiki de una app | `src/content/docs/apps/<slug>/`     |
 
+Paso a paso completo en [docs/runbook-contenido.md](docs/runbook-contenido.md).
+
 Flujo: rama desde `develop` → cambios → PR a `develop` con revisión del otro integrante. Se publica con el PR de release a `main`.
 
 ## Contenido anterior
