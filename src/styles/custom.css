@@ -1,0 +1,17 @@
+/* Estilos propios. Usar siempre variables --sl-* para que funcione el modo claro/oscuro. */
+
+.nav-sitio {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.nav-sitio a {
+  color: var(--sl-color-gray-2);
+  font-size: var(--sl-text-sm);
+  text-decoration: none;
+}
+
+.nav-sitio a:hover {
+  color: var(--sl-color-accent-high);
+}
