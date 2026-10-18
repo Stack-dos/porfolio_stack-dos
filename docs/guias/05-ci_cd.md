@@ -55,7 +55,7 @@ Para correr lo mismo en tu máquina antes de abrir el PR: `make ci`.
 Si el check falla en un PR:
 
 1. Entrá a la pestaña **Checks** del PR, o hacé clic en el ✗ rojo → **Details**.
-2. Abrí el paso en rojo y leé el error. Los más comunes están en la sección 9 del [runbook](../runbook-contenido.md).
+2. Abrí el paso en rojo y leé el error. Los más comunes están en la sección 9 dla guía [CONTRIBUIR](../CONTRIBUIR.md).
 3. Arreglalo y pusheá a la misma rama. El check vuelve a correr solo.
 
 ## 4. `deploy.yml`: la publicación

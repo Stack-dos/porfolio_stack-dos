@@ -1,10 +1,32 @@
 ---
-// Página /proyectos/ (todo archivo en src/pages/ es una ruta).
+// Página /proyectos/ (US-403): todos los proyectos, generados desde la colección `proyectos`.
 // StarlightPage le da el mismo layout que la wiki: header, buscador, modo oscuro, Open Graph.
+import { getCollection } from 'astro:content';
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import TarjetaProyecto from '../components/TarjetaProyecto.astro';
+
+// Orden de aparición: lo más avanzado primero; a igual estado, alfabético.
+const orden = ['publicado', 'en-desarrollo', 'planificado', 'archivado'];
+const proyectos = (await getCollection('proyectos')).sort(
+  (a, b) =>
+    orden.indexOf(a.data.estado) - orden.indexOf(b.data.estado) ||
+    a.data.nombre.localeCompare(b.data.nombre),
+);
 ---
 
 <!-- template 'splash' = sin sidebar de la wiki, ancho completo -->
-<StarlightPage frontmatter={{ title: 'Proyectos', template: 'splash' }}>
-  <p>Listado de proyectos (US-403).</p>
+<StarlightPage
+  frontmatter={{
+    title: 'Proyectos',
+    description:
+      'Las apps que desarrolla el equipo Stack-dos, con su estado, stack y documentación.',
+    template: 'splash',
+  }}
+>
+  <p>Lo que estamos construyendo. Cada proyecto con wiki tiene su documentación técnica.</p>
+  <div class="grilla-proyectos">
+    {proyectos.map((p) => (
+      <TarjetaProyecto proyecto={p} />
+    ))}
+  </div>
 </StarlightPage>

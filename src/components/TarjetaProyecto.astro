@@ -1,0 +1,46 @@
+---
+// Tarjeta de un proyecto. La usan /proyectos/ (US-403) y la landing (US-401).
+// Recibe una entrada de la colección `proyectos` (ver src/content.config.ts).
+import type { CollectionEntry } from 'astro:content';
+import { Badge, LinkButton } from '@astrojs/starlight/components';
+
+interface Props {
+  proyecto: CollectionEntry<'proyectos'>;
+}
+
+const { nombre, descripcion, stack, estado, repo, wiki } = Astro.props.proyecto.data;
+
+// Texto y color del badge según el estado (variantes de color de Starlight).
+const estados = {
+  planificado: { texto: 'Planificado', variant: 'note' },
+  'en-desarrollo': { texto: 'En desarrollo', variant: 'caution' },
+  publicado: { texto: 'Publicado', variant: 'success' },
+  archivado: { texto: 'Archivado', variant: 'default' },
+} as const;
+
+// `wiki` se guarda sin la base ('/apps/stat-pro/'); BASE_URL = '/porfolio_stack-dos'.
+const urlWiki = wiki && `${import.meta.env.BASE_URL.replace(/\/$/, '')}${wiki}`;
+---
+
+<article class="tarjeta-proyecto">
+  <header>
+    <h3>{nombre}</h3>
+    <Badge text={estados[estado].texto} variant={estados[estado].variant} />
+  </header>
+  <p>{descripcion}</p>
+  <ul class="stack" aria-label="Tecnologías">
+    {stack.map((tec) => (
+      <li>{tec}</li>
+    ))}
+  </ul>
+  {(urlWiki || repo) && (
+    <div class="acciones">
+      {urlWiki && <LinkButton href={urlWiki}>Ver wiki</LinkButton>}
+      {repo && (
+        <LinkButton href={repo} variant="secondary" icon="github" iconPlacement="start">
+          Repositorio
+        </LinkButton>
+      )}
+    </div>
+  )}
+</article>
