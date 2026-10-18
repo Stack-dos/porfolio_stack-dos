@@ -1,17 +1,20 @@
-/* Estilos propios. Usar siempre variables --sl-* para que funcione el modo claro/oscuro. */
+/* Estilos propios, cargados en todas las páginas (customCss en astro.config.mjs).
+   Usar siempre variables --sl-* de Starlight en vez de colores fijos:
+   así cambian solas con el modo claro/oscuro. Guía 03. */
 
+/* Links del header (NavLinks.astro) */
 .nav-sitio {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* en el menú del celular, si no entran en una línea, bajan */
   gap: 1rem;
 }
 
 .nav-sitio a {
-  color: var(--sl-color-gray-2);
+  color: var(--sl-color-gray-2); /* gris suave, un poco menos que el texto principal */
   font-size: var(--sl-text-sm);
   text-decoration: none;
 }
 
 .nav-sitio a:hover {
-  color: var(--sl-color-accent-high);
+  color: var(--sl-color-accent-high); /* color de marca al pasar el mouse */
 }

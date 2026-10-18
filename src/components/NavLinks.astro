@@ -1,17 +1,27 @@
 ---
-// Override de SocialIcons: Starlight lo dibuja en el header (escritorio) y en el menú mobile.
+// Links de navegación del sitio (Inicio, Proyectos, Equipo, Wiki).
+// Reemplaza al componente SocialIcons de Starlight (ver `components` en astro.config.mjs).
+// Starlight dibuja SocialIcons en el header (escritorio) y dentro del menú hamburguesa (celular),
+// así que los links aparecen en los dos lugares sin CSS responsive extra. Guía 03.
 import Default from '@astrojs/starlight/components/SocialIcons.astro';
 
+// BASE_URL = '/porfolio_stack-dos' (según la config). Le aseguramos la barra final
+// para poder concatenar rutas: '/porfolio_stack-dos/' + 'proyectos/'.
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+
+// [texto visible, ruta relativa a la base]. Para sumar un link, agregar una fila.
 const links = [
   ['Inicio', ''],
   ['Proyectos', 'proyectos/'],
-  ['Equipo', '#equipo'],
-  ['Wiki', 'apps/stat-pro/'],
+  ['Equipo', '#equipo'], // sección Equipo de la landing (US-401)
+  ['Wiki', 'apps/stat-pro/'], // única app documentada por ahora
 ];
 ---
 
 <nav class="nav-sitio" aria-label="Secciones del sitio">
-  {links.map(([texto, ruta]) => <a href={`${base}${ruta}`}>{texto}</a>)}
+  {links.map(([texto, ruta]) => (
+    <a href={`${base}${ruta}`}>{texto}</a>
+  ))}
 </nav>
+<!-- El SocialIcons original: mantiene el ícono de GitHub de la organización -->
 <Default />
