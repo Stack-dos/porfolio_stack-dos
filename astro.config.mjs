@@ -15,6 +15,8 @@ export default defineConfig({
       },
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/stack-dos' }],
       lastUpdated: true,
+      components: { SocialIcons: './src/components/NavLinks.astro' },
+      customCss: ['./src/styles/custom.css'],
     }),
   ],
 });
