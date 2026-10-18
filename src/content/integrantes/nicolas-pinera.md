@@ -4,6 +4,24 @@ rol: Estudiante de Ingeniería en Computación · Infraestructura, DevOps/SRE y 
 email: nicolaspinera@gmail.com
 linkedin: https://www.linkedin.com/in/nicolas-pi%C3%B1era-07860727b
 github: https://github.com/nicopinera
+stack:
+  [
+    Python,
+    Go,
+    C,
+    Bash,
+    Linux,
+    Docker,
+    Kubernetes,
+    Proxmox,
+    Grafana,
+    Prometheus,
+    InfluxDB,
+    Flask,
+    SQLite,
+    Pandas,
+    Git,
+  ]
 ---
 
 Estudiante avanzado de Ingeniería en Computación (UNC, aprox. 89 % de la carrera) con experiencia en operación de data center e infraestructura: servidores físicos, RAID por hardware, clusters Proxmox y migración de VMs desde VMware. Desarrollo herramientas internas en Python para monitoreo e inventario que están en producción. Busco crecer en roles de Infraestructura, DevOps/SRE o desarrollo backend.
@@ -31,15 +49,6 @@ Córdoba, Argentina.
 **Club General Paz Juniors (2020–2022) y Club Universitario de Córdoba (2023–2025)**
 
 Entrenador Nacional Nivel 3 (ENEBA-ACOTEBA). Planificación y conducción de entrenamientos en categorías formativas y juveniles; liderazgo y gestión de grupos. Esta experiencia es el origen de [Stat Pro](/porfolio_stack-dos/apps/stat-pro/).
-
-## Proyectos
-
-- **[Stat Pro](/porfolio_stack-dos/apps/stat-pro/)** (en desarrollo) — Python, SQLite, GitHub Actions. Plataforma de estadísticas de básquet para entrenadores de categorías formativas.
-- **Homelab self-hosted** — Docker Compose, Linux, Tailscale. Servicios autoalojados (Immich, Nextcloud, Homepage), monitoreo con Uptime Kuma y acceso remoto vía Tailscale.
-- **Herramientas de sistema en C/C++ para Linux** — Módulo de métricas leyendo `/proc` exportado a Prometheus, shell con IPC (pipes, memoria compartida) y asignador de memoria propio. CMake, Conan y CI en GitHub Actions.
-- **Monitor de concurrencia con redes de Petri** — Java y Python. Monitor genérico con políticas configurables, validado con un autómata externo (testing end-to-end entre procesos).
-- **Capa física de LoRaWAN** — Python, NumPy, SDR. Modulación LoRa (FSCM) implementada desde papers, validada con curvas BER/SER y transmitida con SDRs reales.
-- **Firmware de generación y adquisición de señales** — C sobre ARM Cortex-M3 (LPC1769): DAC por DMA, ADC con timers y UART, con una herramienta en Python que grafica la señal y su FFT.
 
 ## Formación
 

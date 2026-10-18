@@ -6,6 +6,7 @@ rol: Estudiante de Ingeniería en Sistemas, desarrollador # una línea: carrera 
 email: marcosbattigane@gmail.com
 linkedin: https://www.linkedin.com/in/COMPLETAR # URL completa de tu perfil
 github: https://github.com/COMPLETAR
+# stack: [Python, SQL, Git]          # opcional: tecnologías, se muestran con ícono en tu CV
 # foto: ./fotos/marcos-battigane.jpg   # opcional: cuadrada, en src/content/integrantes/fotos/
 # cv_pdf: /cv/marcos-battigane.pdf     # opcional: el archivo va en public/cv/
 ---
