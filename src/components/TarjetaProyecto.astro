@@ -3,6 +3,7 @@
 // Recibe una entrada de la colección `proyectos` (ver src/content.config.ts).
 import type { CollectionEntry } from 'astro:content';
 import { Badge, LinkButton } from '@astrojs/starlight/components';
+import IconoTec from './IconoTec.astro';
 
 interface Props {
   proyecto: CollectionEntry<'proyectos'>;
@@ -30,7 +31,7 @@ const urlWiki = wiki && `${import.meta.env.BASE_URL.replace(/\/$/, '')}${wiki}`;
   <p>{descripcion}</p>
   <ul class="stack" aria-label="Tecnologías">
     {stack.map((tec) => (
-      <li>{tec}</li>
+      <IconoTec nombre={tec} compacto />
     ))}
   </ul>
   {(urlWiki || repo) && (
