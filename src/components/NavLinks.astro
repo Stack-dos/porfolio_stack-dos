@@ -1,0 +1,17 @@
+---
+// Override de SocialIcons: Starlight lo dibuja en el header (escritorio) y en el menú mobile.
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const links = [
+  ['Inicio', ''],
+  ['Proyectos', 'proyectos/'],
+  ['Equipo', '#equipo'],
+  ['Wiki', 'apps/stat-pro/'],
+];
+---
+
+<nav class="nav-sitio" aria-label="Secciones del sitio">
+  {links.map(([texto, ruta]) => <a href={`${base}${ruta}`}>{texto}</a>)}
+</nav>
+<Default />
