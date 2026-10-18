@@ -18,3 +18,132 @@
 .nav-sitio a:hover {
   color: var(--sl-color-accent-high); /* color de marca al pasar el mouse */
 }
+
+/* Grilla de tarjetas (proyectos y equipo): 1 columna en celular, varias en pantallas anchas */
+.grilla-proyectos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Tarjeta de proyecto (TarjetaProyecto.astro) */
+.tarjeta-proyecto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.5rem;
+  background: var(--sl-color-gray-7, var(--sl-color-gray-6));
+}
+
+/* Starlight agrega margen arriba de cada hijo del contenido; en la tarjeta lo manejamos con gap */
+.tarjeta-proyecto > *,
+.tarjeta-proyecto header > * {
+  margin: 0;
+}
+
+.tarjeta-proyecto header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.tarjeta-proyecto .stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0;
+  list-style: none;
+  font-size: var(--sl-text-xs);
+}
+
+.tarjeta-proyecto .stack li {
+  margin: 0;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--sl-color-gray-6);
+  color: var(--sl-color-gray-2);
+}
+
+.tarjeta-proyecto .acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto; /* empuja los botones al fondo para alinear tarjetas de distinta altura */
+}
+
+/* Encabezado del CV (src/pages/equipo/[slug].astro) */
+.cv-encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.cv-encabezado * {
+  margin-top: 0;
+}
+
+.cv-avatar {
+  display: grid;
+  place-items: center;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--sl-color-accent-low);
+  color: var(--sl-color-accent-high);
+  font-size: 2.5rem;
+  font-weight: 600;
+}
+
+.cv-rol {
+  font-size: var(--sl-text-lg);
+  color: var(--sl-color-white);
+}
+
+.cv-contacto {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  padding: 0;
+  list-style: none;
+}
+
+.cv-contacto li {
+  margin: 0;
+}
+
+/* Imprimir → Guardar como PDF (ADR-007): solo el CV, sin header, buscador ni footer. */
+@media print {
+  .page > header,
+  footer {
+    display: none;
+  }
+
+  /* Al imprimir se muestran las URLs completas de contacto (en papel no se puede hacer clic). */
+  .cv-contacto a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.8em;
+  }
+}
+
+/* Tarjeta de integrante en la landing: avatar más chico y centrado */
+.tarjeta-integrante {
+  align-items: center;
+  text-align: center;
+}
+
+.tarjeta-integrante .cv-avatar {
+  width: 6rem;
+  height: 6rem;
+  font-size: 2rem;
+}
+
+.tarjeta-integrante .cv-contacto {
+  justify-content: center;
+}
