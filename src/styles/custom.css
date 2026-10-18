@@ -147,3 +147,222 @@
 .tarjeta-integrante .cv-contacto {
   justify-content: center;
 }
+
+/* ---------- Tipografía y ancho ---------- */
+
+/* Texto más grande (16px → 19px) y contenido más ancho (45rem por defecto). */
+:root {
+  --sl-text-body: 1.1875rem;
+  --sl-content-width: 55rem;
+}
+
+/* ---------- Grillas ---------- */
+
+/* Starlight agrega margen arriba de cada elemento del contenido, también a las tarjetas
+   de una grilla: eso hacía que la segunda tarjeta quedara más chica que la primera. */
+.grilla-proyectos > * {
+  margin: 0;
+}
+
+/* Stack con íconos (IconoTec.astro). En las tarjetas: solo íconos chicos. */
+.tarjeta-proyecto .stack {
+  gap: 0.5rem;
+}
+
+.tarjeta-proyecto .stack li {
+  padding: 0;
+  background: none;
+}
+
+.tarjeta-proyecto .stack img {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Tecnología sin ícono: chip de texto (en tarjetas, centrado con los íconos). */
+.tarjeta-proyecto .stack li.sin-icono {
+  align-self: center;
+  padding: 0.2rem 0.6rem;
+  background: var(--sl-color-gray-6);
+}
+
+/* Versión grande (/proyectos/ y CV): ícono arriba y nombre abajo. */
+.stack.stack-grande {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.stack.stack-grande li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: var(--sl-text-sm);
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.stack.stack-grande li:hover {
+  transform: translateY(-4px);
+}
+
+.stack.stack-grande img {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Sin ícono: una baldosa del mismo alto que los íconos, con el nombre. */
+.stack.stack-grande li.sin-icono span {
+  display: grid;
+  place-items: center;
+  min-width: 3rem;
+  height: 3rem;
+  padding: 0 0.5rem;
+  border-radius: 0.75rem;
+  background: var(--sl-color-gray-6);
+  font-weight: 600;
+}
+
+/* Tarjetas que se levantan un poco al pasar el mouse. */
+.tarjeta-proyecto {
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
+}
+
+.tarjeta-proyecto:hover {
+  transform: translateY(-4px);
+  border-color: var(--sl-color-accent);
+}
+
+/* ---------- CV ---------- */
+
+/* Encabezado como banner con gradiente del color de marca. */
+.cv-encabezado {
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, var(--sl-color-accent-low), transparent 70%);
+  border: 1px solid var(--sl-color-gray-5);
+}
+
+/* Títulos de sección con una barra de color. */
+.cv-cuerpo h2 {
+  padding-inline-start: 0.75rem;
+  border-inline-start: 4px solid var(--sl-color-accent);
+}
+
+/* Cada puesto (###) con un punto de color, como hitos de una línea de tiempo. */
+.cv-cuerpo h3 {
+  position: relative;
+  padding-inline-start: 1.25rem;
+}
+
+.cv-cuerpo h3::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0.45em;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--sl-color-accent);
+}
+
+/* ---------- Hero de la landing ---------- */
+
+/* Título con gradiente del color de marca. */
+.hero h1 {
+  background: linear-gradient(90deg, var(--sl-color-accent-high), var(--sl-color-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Terminal que "tipea" comandos (el HTML está en src/pages/index.astro). */
+.terminal {
+  width: min(100%, 26rem);
+  padding: 0 1.25rem 1.25rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.75rem;
+  background: #0d1117; /* siempre oscura, como una terminal real */
+  box-shadow: var(--sl-shadow-lg);
+  font-family: var(--sl-font-mono);
+  font-size: var(--sl-text-sm);
+  color: #e6edf3;
+  text-align: start;
+}
+
+.terminal-barra {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.8rem 0;
+}
+
+.terminal-barra span {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+.terminal-barra span:nth-child(2) {
+  background: #febc2e;
+}
+.terminal-barra span:nth-child(3) {
+  background: #28c840;
+}
+
+/* Cada línea arranca con ancho 0 y crece de a un carácter (steps) hasta --n caracteres. */
+.terminal .linea {
+  width: 0;
+  margin: 0.3rem 0 0;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: tipear calc(var(--n) * 50ms) steps(var(--n)) var(--d) forwards;
+}
+
+.terminal .ok {
+  color: #28c840;
+}
+
+/* Cursor parpadeando al final de la última línea. */
+.terminal .linea:last-child::after {
+  content: '▋';
+  animation: parpadeo 1s steps(1) infinite;
+}
+
+@keyframes tipear {
+  to {
+    width: calc(var(--n) * 1ch + 1ch);
+  }
+}
+
+@keyframes parpadeo {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Accesibilidad: si el usuario pidió menos movimiento, se muestra todo de una. */
+@media (prefers-reduced-motion: reduce) {
+  .terminal .linea {
+    width: auto;
+    animation: none;
+  }
+}
+
+/* ---------- Pestañas de la wiki ---------- */
+
+/* Mermaid no puede dibujar dentro de algo oculto (display: none) y el diagrama sale roto.
+   Las pestañas ocultas que tienen diagramas se sacan de la vista sin ocultarlas del todo. */
+starlight-tabs [role='tabpanel'][hidden]:has(.mermaid, pre.mermaid) {
+  display: block;
+  position: absolute;
+  inset-inline-start: -9999px;
+  width: var(--sl-content-width);
+  visibility: hidden;
+}
