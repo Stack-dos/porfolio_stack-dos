@@ -1,0 +1,50 @@
+# Deploy (US-301): publica el sitio en GitHub Pages.
+# Corre solo cuando algo llega a `main` (el PR de release desde `develop`)
+# o a mano desde la pestaña Actions → Deploy → "Run workflow".
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # permite lanzarlo a mano (útil si un deploy falló por algo externo)
+
+# Permisos mínimos que necesita el deploy a Pages:
+permissions:
+  contents: read # leer el código del repo
+  pages: write # publicar en GitHub Pages
+  id-token: write # token OIDC con el que deploy-pages se autentica ante Pages
+
+# Si se mergean dos releases seguidos, el segundo espera a que termine el primero
+# (no se cancela un deploy a mitad de camino).
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # Job 1: genera el sitio (dist/) y lo sube como "artifact" de Pages.
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v7
+
+      # withastro/action hace todo: instala Node, `npm ci`, `astro build`
+      # y sube dist/ en el formato que espera GitHub Pages.
+      - name: Build con Astro
+        uses: withastro/action@v6
+        with:
+          node-version: 22 # misma versión que .nvmrc
+
+  # Job 2: toma el artifact del job anterior y lo publica.
+  deploy:
+    needs: build # no arranca hasta que build termine bien
+    runs-on: ubuntu-latest
+    # El "environment" github-pages muestra la URL publicada en la pestaña del run
+    # y en la portada del repo (sección Deployments).
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

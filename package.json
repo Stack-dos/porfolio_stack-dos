@@ -1,0 +1,27 @@
+{
+  "name": "porfolio-stack-dos",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.42.6",
+    "astro": "^7.2.10",
+    "astro-mermaid": "^2.1.0",
+    "mermaid": "^11.17.2",
+    "sharp": "^0.35.3",
+    "starlight-image-zoom": "^0.16.2",
+    "starlight-links-validator": "^0.27.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.1",
+    "typescript": "^6.0.3"
+  }
+}

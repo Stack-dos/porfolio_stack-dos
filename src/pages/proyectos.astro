@@ -1,0 +1,10 @@
+---
+// Página /proyectos/ (todo archivo en src/pages/ es una ruta).
+// StarlightPage le da el mismo layout que la wiki: header, buscador, modo oscuro, Open Graph.
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+---
+
+<!-- template 'splash' = sin sidebar de la wiki, ancho completo -->
+<StarlightPage frontmatter={{ title: 'Proyectos', template: 'splash' }}>
+  <p>Listado de proyectos (US-403).</p>
+</StarlightPage>
