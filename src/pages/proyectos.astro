@@ -4,14 +4,18 @@
 import { getCollection } from 'astro:content';
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import TarjetaProyecto from '../components/TarjetaProyecto.astro';
+import IconoTec from '../components/IconoTec.astro';
 
 // Orden de aparición: lo más avanzado primero; a igual estado, alfabético.
 const orden = ['publicado', 'en-desarrollo', 'planificado', 'archivado'];
-const proyectos = (await getCollection('proyectos')).sort(
+// Solo proyectos del equipo: los de un único autor son personales y van en su CV.
+const proyectos = (await getCollection('proyectos', (p) => p.data.autores.length !== 1)).sort(
   (a, b) =>
     orden.indexOf(a.data.estado) - orden.indexOf(b.data.estado) ||
     a.data.nombre.localeCompare(b.data.nombre),
 );
+// Todas las tecnologías de todos los proyectos, sin repetir (Set descarta duplicados).
+const stack = [...new Set(proyectos.flatMap((p) => p.data.stack))].sort();
 ---
 
 <!-- template 'splash' = sin sidebar de la wiki, ancho completo -->
@@ -24,6 +28,13 @@ const proyectos = (await getCollection('proyectos')).sort(
   }}
 >
   <p>Lo que estamos construyendo. Cada proyecto con wiki tiene su documentación técnica.</p>
+  <h2>Nuestro stack</h2>
+  <ul class="stack stack-grande" aria-label="Tecnologías que usamos">
+    {stack.map((tec) => (
+      <IconoTec nombre={tec} />
+    ))}
+  </ul>
+  <h2>Proyectos</h2>
   <div class="grilla-proyectos">
     {proyectos.map((p) => (
       <TarjetaProyecto proyecto={p} />
