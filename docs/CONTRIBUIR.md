@@ -1,8 +1,8 @@
-# Runbook — Agregar o actualizar contenido del sitio
+# Cómo contribuir — agregar o actualizar contenido del sitio
 
 Paso a paso para cada tipo de contenido. Para entender el _porqué_ de cada cosa, ver las guías en [docs/guias/](guias/).
 
-> **Estado:** este runbook describe el sitio completo según el PRD. Las secciones marcadas con 🚧 dependen de historias que todavía no están hechas. Hasta que lo estén, el archivo se puede cargar igual, pero todavía no se muestra en ninguna página.
+> **Estado:** lo marcado con 🚧 depende del blog (US-505, v1.1.0), que todavía no está hecho.
 
 ## 0. Mapa del sitio: qué archivo alimenta cada página
 
@@ -23,7 +23,7 @@ flowchart LR
 | Sumar o editar un integrante / su CV | `src/content/integrantes/<slug>.md`       | 3       |
 | Documentar una app en la wiki        | `src/content/docs/apps/<slug>/`           | 4       |
 | Publicar un post o un release 🚧     | `src/content/docs/blog/<fecha>-<slug>.md` | 5       |
-| Cambiar textos de la landing 🚧      | `src/pages/index.astro`                   | 6       |
+| Cambiar textos de la landing         | `src/pages/index.astro`                   | 6       |
 | Cambiar la imagen al compartir       | `public/og.png` (1200×630)                | 7       |
 
 ## 1. Flujo común (siempre)
@@ -49,7 +49,7 @@ Reglas para todo el contenido:
 
 ## 2. Proyecto
 
-Archivo: `src/content/proyectos/<slug>.md`. Se muestra en `/proyectos/` 🚧 (US-403) y, si es `destacado`, en la landing 🚧 (US-401).
+Archivo: `src/content/proyectos/<slug>.md`. Se muestra en `/proyectos/` y, si es `destacado`, en la landing.
 
 ```md
 ---
@@ -69,7 +69,7 @@ destacado: false # opcional (default false)
 
 ## 3. Integrante y CV
 
-Archivo: `src/content/integrantes/<slug>.md`. Se muestra como tarjeta en la landing 🚧 (US-401) y como CV en `/equipo/<slug>/` 🚧 (US-402).
+Archivo: `src/content/integrantes/<slug>.md`. Se muestra como tarjeta en la landing y como CV en `/equipo/<slug>/`.
 
 ```md
 ---
@@ -150,13 +150,13 @@ Herramientas disponibles (guía 04):
 
 **App nueva, checklist:**
 
-1. Copiar la plantilla (`docs/plantilla-app/`, 🚧 US-405) a `src/content/docs/apps/<slug>/`.
-2. Completar las 4 páginas.
+1. Copiar la plantilla (`docs/plantilla-app/`, sin su README) a `src/content/docs/apps/<slug>/`.
+2. Reemplazar `SLUG` y todo lo que dice `COMPLETAR`. Antes del PR, `grep -rn "COMPLETAR|SLUG" src/content/docs/apps/<slug>/` no tiene que devolver nada.
 3. Cargar o actualizar el proyecto en `src/content/proyectos/<slug>.md`, con `wiki: /apps/<slug>/`.
 4. Si querés que aparezca en el header, sumarla en `src/components/NavLinks.astro` (hoy "Wiki" apunta a Stat Pro).
 5. Es un **MINOR** del sitio (sección 8).
 
-**Al cerrar cada versión de la app:** revisar que la wiki siga siendo cierta y publicar el post del release (sección 5).
+**Al cerrar cada versión de la app** (ej. Stat Pro v0.1): quien cerró la versión abre un PR en este repo que actualiza la wiki (estado del aviso en `index.md`, roadmap, comandos nuevos en `uso.md`) y el otro integrante lo revisa antes de aprobar. Desde la v1.1.0 del sitio, además se publica el post del release (sección 5).
 
 ## 5. Post del blog 🚧
 
@@ -184,7 +184,7 @@ Más detalles en la [wiki](/porfolio_stack-dos/apps/stat-pro/).
 - **Post de avance**, sin versión: solo el tag del proyecto, o ninguno si es del equipo.
 - Aparece solo en `/blog/`, en la página de su tag y en el RSS.
 
-## 6. Landing 🚧
+## 6. Landing
 
 La landing (`src/pages/index.astro`, US-401) **no tiene datos hardcodeados**:
 
@@ -200,7 +200,7 @@ Para cambiar algo de ahí, editá esas colecciones (secciones 2 y 3). Solo los t
 ## 8. Publicar (release del sitio)
 
 1. Con todo mergeado en `develop`, abrir un PR `develop` → `main`.
-2. Al mergear, GitHub Actions publica el sitio 🚧 (US-301).
+2. Al mergear, GitHub Actions publica el sitio (`.github/workflows/deploy.yml`, guía 05).
 3. Crear el tag y el release en GitHub según SemVer:
 
    | Cambio                                    | Versión          |
