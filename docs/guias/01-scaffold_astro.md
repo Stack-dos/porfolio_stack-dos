@@ -385,7 +385,7 @@ El bloque entre `---` al principio de un `.md` son **metadatos** escritos en **Y
 nombre: Stat Pro
 estado: en-desarrollo
 stack: [Python, FastAPI, React] # lista
-repo: https://github.com/stack-dos/app_estadistica
+repo: https://github.com/Stack-dos/app_estadisticas
 wiki: /apps/stat-pro/ # opcional
 ---
 ```
