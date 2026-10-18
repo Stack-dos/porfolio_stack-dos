@@ -40,6 +40,9 @@ export default defineConfig({
       // Muestra "Última actualización" al pie de cada página de la wiki (sale de la fecha del commit).
       lastUpdated: true,
 
+      // Sin el índice "En esta página" de la derecha: más ancho para el contenido.
+      tableOfContents: false,
+
       // Reemplazamos el componente SocialIcons por el nuestro, que suma los links
       // Inicio / Proyectos / Equipo / Wiki y después dibuja el original (guía 03).
       components: { SocialIcons: './src/components/NavLinks.astro' },
@@ -52,6 +55,15 @@ export default defineConfig({
       head: [
         { tag: 'meta', attrs: { property: 'og:image', content: `${site}${base}/og.png` } },
         { tag: 'meta', attrs: { name: 'twitter:card', content: 'summary_large_image' } },
+        // Estadísticas de visitas con Umami (sin cookies). Panel en https://cloud.umami.is
+        {
+          tag: 'script',
+          attrs: {
+            defer: true,
+            src: 'https://cloud.umami.is/script.js',
+            'data-website-id': 'd5ea7d34-331f-4010-b5ad-17b7fb1e198b',
+          },
+        },
       ],
 
       plugins: [
