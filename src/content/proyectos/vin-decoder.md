@@ -4,4 +4,5 @@ descripcion: Microservicio que recibe un VIN y devuelve la ficha técnica comple
 stack: [Go, PostgreSQL, Docker, Kubernetes, GitHub Actions]
 estado: planificado
 destacado: true
+autores: [nicolas-pinera, marcos-battigane]
 ---
