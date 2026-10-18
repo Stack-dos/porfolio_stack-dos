@@ -6,6 +6,8 @@ import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { LinkButton } from '@astrojs/starlight/components';
+import IconoTec from '../../components/IconoTec.astro';
+import TarjetaProyecto from '../../components/TarjetaProyecto.astro';
 
 export async function getStaticPaths() {
   const integrantes = await getCollection('integrantes');
@@ -17,7 +19,17 @@ export async function getStaticPaths() {
 }
 
 const { integrante } = Astro.props;
-const { nombre, rol, foto, email, linkedin, github, cv_pdf } = integrante.data;
+const { nombre, rol, foto, email, linkedin, github, cv_pdf, stack } = integrante.data;
+// Su portfolio: los proyectos donde figura en `autores`, lo más avanzado primero.
+// Con un solo autor es individual; con más, es del equipo (misma regla que /proyectos/).
+const orden = ['en-desarrollo', 'publicado', 'planificado', 'archivado'];
+const suyos = (
+  await getCollection('proyectos', (p) => p.data.autores.some((a) => a.id === integrante.id))
+).sort((a, b) => orden.indexOf(a.data.estado) - orden.indexOf(b.data.estado));
+const secciones = [
+  { titulo: 'Proyectos del equipo', proyectos: suyos.filter((p) => p.data.autores.length > 1) },
+  { titulo: 'Proyectos individuales', proyectos: suyos.filter((p) => p.data.autores.length === 1) },
+];
 // `Content` es el cuerpo Markdown del archivo (el CV), listo para dibujar.
 const { Content } = await render(integrante);
 
@@ -66,5 +78,33 @@ const iniciales = nombre
     </div>
   </section>
 
-  <Content />
+  {stack.length > 0 && (
+    <>
+      <h2>Stack</h2>
+      <ul class="stack stack-grande" aria-label="Tecnologías">
+        {stack.map((tec) => (
+          <IconoTec nombre={tec} />
+        ))}
+      </ul>
+    </>
+  )}
+
+  {secciones.map(
+    ({ titulo, proyectos }) =>
+      proyectos.length > 0 && (
+        <>
+          <h2>{titulo}</h2>
+          <div class="grilla-proyectos">
+            {proyectos.map((p) => (
+              <TarjetaProyecto proyecto={p} />
+            ))}
+          </div>
+        </>
+      ),
+  )}
+
+  <!-- cv-cuerpo: estilos de línea de tiempo para la experiencia (custom.css) -->
+  <div class="cv-cuerpo">
+    <Content />
+  </div>
 </StarlightPage>
