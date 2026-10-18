@@ -1,0 +1,42 @@
+# CI (US-302): valida cada PR antes de poder mergearlo.
+# Si algún paso falla, el PR queda en rojo; con branch protection (ver docs/guias/05-ci_cd.md)
+# no se puede mergear hasta arreglarlo.
+name: CI
+
+on:
+  pull_request:
+    branches: [develop, main] # PRs que apuntan a estas ramas
+
+permissions:
+  contents: read # solo lee el código; este workflow no publica nada
+
+# Si se pushea otro commit al mismo PR, se cancela la corrida vieja (ya no importa).
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # El nombre del job ("build") es el que se elige como check obligatorio en branch protection.
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v7
+
+      - name: Instalar Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc # misma versión que en local
+          cache: npm # reutiliza descargas de npm entre corridas
+
+      # `npm ci` instala exactamente lo de package-lock.json (falla si no coincide con package.json).
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Chequeo de tipos de TypeScript y de los archivos .astro.
+      - name: Chequeo de tipos
+        run: npx astro check
+
+      # Build completo: valida frontmatter (Zod) y links internos (links-validator).
+      - name: Build
+        run: npm run build
