@@ -1,12 +1,16 @@
 # Plantilla de wiki para una app
 
-Copiá esta carpeta (menos este README) a `src/content/docs/apps/<slug>/`, reemplazá `SLUG` por el slug de la app y todo lo que dice `COMPLETAR`. El paso a paso completo está en [CONTRIBUIR.md](../CONTRIBUIR.md#4-wiki-de-una-app).
+Copiá `index.mdx` a `src/content/docs/apps/<slug>/index.mdx` y reemplazá todo lo que dice `COMPLETAR`. El paso a paso completo está en [CONTRIBUIR.md](../CONTRIBUIR.md#4-wiki-de-una-app).
 
-| Archivo           | Contenido                                  |
-| ----------------- | ------------------------------------------ |
-| `index.md`        | Qué es, estado, problema, alcance, roadmap |
-| `instalacion.md`  | Requisitos, pasos y cómo verificar         |
-| `arquitectura.md` | Stack, componentes, modelo de datos, ADRs  |
-| `uso.md`          | Flujo típico y ejemplos por funcionalidad  |
+Cada app es **una sola página con pestañas** (componente `<Tabs>` de Starlight), sin sidebar:
 
-Antes de abrir el PR: `grep -rn "COMPLETAR\|SLUG" src/content/docs/apps/<slug>/` no tiene que devolver nada.
+| Pestaña      | Contenido                                       |
+| ------------ | ----------------------------------------------- |
+| Inicio       | Qué es, estado, problema, alcance, roadmap      |
+| Instalación  | Requisitos y pasos (componente `<Steps>`)       |
+| Arquitectura | Stack, componentes (Mermaid), modelo, ADRs      |
+| Uso          | Flujo típico (`<Steps>`) y ejemplos por función |
+
+Es `.mdx` (Markdown + componentes), así que: comentarios con `{/* ... */}` en vez de `<!-- -->`, y links con `[texto](url)` en vez de `<url>`.
+
+Antes de abrir el PR: `grep -n "COMPLETAR" src/content/docs/apps/<slug>/index.mdx` no tiene que devolver nada.

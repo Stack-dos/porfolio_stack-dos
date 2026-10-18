@@ -1,7 +1,7 @@
 // Colecciones de contenido: qué carpetas lee Astro y qué campos tiene que tener cada .md.
 // Si un frontmatter no cumple el esquema, `npm run build` falla con el archivo y el campo.
 // Explicación detallada: docs/guias/02-typescript_y_colecciones.md
-import { defineCollection } from 'astro:content';
+import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { docsLoader } from '@astrojs/starlight/loaders';
@@ -18,6 +18,9 @@ const proyectos = defineCollection({
     repo: z.url().optional(), // opcional: un proyecto planificado puede no tener repo todavía
     wiki: z.string().startsWith('/apps/').optional(), // ruta a su wiki, solo si existe
     destacado: z.boolean().default(false), // true = aparece en la landing
+    // Quiénes trabajan en él (slugs de integrantes). reference() hace fallar el build si el slug no existe.
+    // Cada proyecto aparece en el CV de sus autores.
+    autores: z.array(reference('integrantes')).default([]),
   }),
 });
 
@@ -36,6 +39,7 @@ const integrantes = defineCollection({
       linkedin: z.url(),
       github: z.url(),
       cv_pdf: z.string().startsWith('/cv/').optional(), // archivo en public/cv/<slug>.pdf
+      stack: z.array(z.string()).default([]), // tecnologías que se muestran con ícono en su CV
     }),
 });
 

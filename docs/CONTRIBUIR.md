@@ -12,7 +12,7 @@ flowchart LR
     P --> PR[/proyectos/]
     I[src/content/integrantes/*.md] --> L
     I --> CV[/equipo/slug/ CV/]
-    W[src/content/docs/apps/slug/*.md] --> WK[/apps/slug/ Wiki/]
+    W[src/content/docs/apps/slug/index.mdx] --> WK[/apps/slug/ Wiki/]
     B[src/content/docs/blog/*.md] --> BL[/blog/ + RSS/]
     PDF[public/cv/slug.pdf] --> CV
 ```
@@ -60,12 +60,15 @@ estado: planificado # planificado | en-desarrollo | publicado | archivado
 repo: https://github.com/stack-dos/vin-decoder # opcional
 wiki: /apps/vin-decoder/ # opcional, solo si existe la wiki
 destacado: false # opcional (default false)
+autores: [nicolas-pinera, marcos-battigane] # slugs de integrantes; el proyecto aparece en su CV
 ---
 ```
 
 - Los campos y sus reglas están en `src/content.config.ts` (guía 02). Si algo está mal, el build lo dice.
 - Cuando el proyecto cambia de etapa, actualizá `estado`. Si le hiciste wiki, agregá `wiki`.
 - No borres proyectos viejos: usá `estado: archivado`.
+- **Proyecto personal vs. del equipo:** con un solo autor (`autores: [nicolas-pinera]`) es personal: aparece solo como tarjeta en el CV de esa persona. Con dos o más, es del equipo y aparece también en `/proyectos/`.
+- **Íconos del stack:** salen de [skillicons.dev](https://skillicons.dev) (los mismos del README de GitHub). La tabla de nombres está en `src/components/IconoTec.astro`; si una tecnología no está ahí, se muestra como texto.
 
 ## 3. Integrante y CV
 
@@ -80,6 +83,7 @@ email: ...
 linkedin: https://linkedin.com/in/<usuario>
 github: https://github.com/<usuario>
 cv_pdf: /cv/nicolas-pinera.pdf # opcional
+stack: [Python, Go, Docker] # opcional: se muestra con íconos en su CV
 ---
 
 ## Experiencia
@@ -98,44 +102,59 @@ cv_pdf: /cv/nicolas-pinera.pdf # opcional
 - **El cuerpo es el CV.** Se escribe en Markdown, con títulos `##`.
 - **Foto:** va en `src/content/integrantes/fotos/<slug>.jpg`, cuadrada, idealmente de 400×400 o más. Astro la optimiza; no hace falta achicarla. La ruta en el frontmatter es relativa al `.md`.
 - **CV en PDF:** va en `public/cv/<slug>.pdf`. En el frontmatter se escribe `/cv/<slug>.pdf`, sin la base (la agrega la página). Alternativa: desde `/equipo/<slug>/`, "Imprimir → Guardar como PDF" (ADR-007).
+- **Proyectos del CV:** se arman solos con los proyectos que lo tienen en `autores` (sección 2).
 - **Integrante nuevo:** creá el archivo y listo. La tarjeta y su página de CV se generan solas.
 
 ## 4. Wiki de una app
 
-Carpeta: `src/content/docs/apps/<slug>/`. Aparece en el sidebar y en el buscador sin configurar nada.
+Archivo: `src/content/docs/apps/<slug>/index.mdx`. **Una sola página por app**, sin sidebar ni índice lateral: las secciones van en **pestañas** (`<Tabs>`) y los procedimientos en **pasos** (`<Steps>`). Aparece en el buscador sin configurar nada.
 
-```txt
-apps/<slug>/
-├── index.md          # qué es, estado, links (repo, proyecto)
-├── instalacion.md
-├── arquitectura.md   # con diagramas Mermaid
-└── uso.md            # con capturas
-```
-
-Cada página:
-
-````md
+````mdx
 ---
-title: Arquitectura
-description: Cómo está armado Stat Pro por dentro.
-sidebar:
-  order: 3 # orden dentro de la sección (opcional)
+title: Stat Pro
+description: App de estadísticas de básquet para entrenadores.
+template: splash # sin sidebar
 ---
 
-## Componentes
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
 
-```mermaid
-flowchart LR
-    A[App] --> DB[(SQLite)]
-```
+<Tabs>
+<TabItem label="Inicio" icon="information">
 
-![Pantalla principal](./capturas/inicio.png)
+## Qué es
+
+...
+
+</TabItem>
+<TabItem label="Instalación" icon="laptop">
+
+<Steps>
+
+1. Clonar el repo:
+
+   ```bash
+   git clone ...
+   ```
+
+2. ...
+
+</Steps>
+
+</TabItem>
+</Tabs>
 ````
+
+Reglas de MDX (si no se cumplen, el build falla):
+
+- Línea en blanco antes y después de `<TabItem>`, `</TabItem>`, `<Steps>` y `</Steps>`.
+- Dentro de `<Steps>` va **solo** una lista numerada. El código de cada paso, indentado 3 espacios.
+- Comentarios con `{/* ... */}`, no `<!-- -->`. Links con `[texto](url)`, no `<url>`. Un `<` suelto en el texto se escribe `&lt;`.
+- Los diagramas largos y lineales (A → B → C → ...) se ven angostos: mejor como `<Steps>`. Mermaid queda para lo que tiene ramas o relaciones (capas, modelo de datos).
 
 Herramientas disponibles (guía 04):
 
 - **Diagramas:** bloques ` ```mermaid `. Se pueden probar antes en <https://mermaid.live>.
-- **Capturas:** van junto a los `.md`, por ejemplo en `apps/<slug>/capturas/`. Se amplían con un clic.
+- **Capturas:** van junto al `.mdx`, por ejemplo en `apps/<slug>/capturas/`. Se amplían con un clic.
 - **Avisos:**
 
   ```md
@@ -150,13 +169,13 @@ Herramientas disponibles (guía 04):
 
 **App nueva, checklist:**
 
-1. Copiar la plantilla (`docs/plantilla-app/`, sin su README) a `src/content/docs/apps/<slug>/`.
-2. Reemplazar `SLUG` y todo lo que dice `COMPLETAR`. Antes del PR, `grep -rn "COMPLETAR|SLUG" src/content/docs/apps/<slug>/` no tiene que devolver nada.
+1. Copiar `docs/plantilla-app/index.mdx` a `src/content/docs/apps/<slug>/index.mdx`.
+2. Reemplazar todo lo que dice `COMPLETAR`. Antes del PR, `grep -n "COMPLETAR" src/content/docs/apps/<slug>/index.mdx` no tiene que devolver nada.
 3. Cargar o actualizar el proyecto en `src/content/proyectos/<slug>.md`, con `wiki: /apps/<slug>/`.
 4. Si querés que aparezca en el header, sumarla en `src/components/NavLinks.astro` (hoy "Wiki" apunta a Stat Pro).
 5. Es un **MINOR** del sitio (sección 8).
 
-**Al cerrar cada versión de la app** (ej. Stat Pro v0.1): quien cerró la versión abre un PR en este repo que actualiza la wiki (estado del aviso en `index.md`, roadmap, comandos nuevos en `uso.md`) y el otro integrante lo revisa antes de aprobar. Desde la v1.1.0 del sitio, además se publica el post del release (sección 5).
+**Al cerrar cada versión de la app** (ej. Stat Pro v0.1): quien cerró la versión abre un PR en este repo que actualiza la wiki (aviso de estado y roadmap en la pestaña Inicio, comandos nuevos en la pestaña Uso) y el otro integrante lo revisa antes de aprobar. Desde la v1.1.0 del sitio, además se publica el post del release (sección 5).
 
 ## 5. Post del blog 🚧
 

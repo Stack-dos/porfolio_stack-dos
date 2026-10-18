@@ -1,0 +1,49 @@
+---
+// Una tecnología como <li> de una lista `.stack`, con el ícono de skillicons.dev (los mismos del README de GitHub).
+// `compacto`: solo el ícono (el nombre queda como tooltip y texto alternativo), para las tarjetas.
+// Si la tecnología no tiene ícono, se muestra el nombre como chip de texto.
+interface Props {
+  nombre: string;
+  compacto?: boolean;
+}
+
+const { nombre, compacto = false } = Astro.props;
+
+// Nombre en el frontmatter → id de skillicons. Lista completa: https://github.com/tandpfun/skill-icons#icons-list
+// Para sumar una tecnología: agregarla acá si existe en esa lista.
+const ids: Record<string, string> = {
+  python: 'py',
+  go: 'go',
+  c: 'c',
+  'c++': 'cpp',
+  java: 'java',
+  bash: 'bash',
+  sqlite: 'sqlite',
+  postgresql: 'postgres',
+  docker: 'docker',
+  kubernetes: 'kubernetes',
+  'github actions': 'githubactions',
+  flask: 'flask',
+  grafana: 'grafana',
+  prometheus: 'prometheus',
+  linux: 'linux',
+  git: 'git',
+  cmake: 'cmake',
+  matlab: 'matlab',
+  latex: 'latex',
+};
+const id = ids[nombre.toLowerCase()];
+---
+
+<li class:list={{ 'sin-icono': !id }} title={compacto ? nombre : undefined}>
+  {id && (
+    <img
+      src={`https://skillicons.dev/icons?i=${id}`}
+      alt={compacto ? nombre : ''}
+      width="48"
+      height="48"
+      loading="lazy"
+    />
+  )}
+  {(!compacto || !id) && <span>{nombre}</span>}
+</li>

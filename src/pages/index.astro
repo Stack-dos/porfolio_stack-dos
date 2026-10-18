@@ -21,7 +21,18 @@ const destacados = await getCollection('proyectos', (p) => p.data.destacado);
     template: 'splash',
     // El hero de Starlight: título grande, bajada y botones.
     hero: {
-      tagline: 'Dos estudiantes de ingeniería construyendo y documentando proyectos de verdad.',
+      tagline: 'Construimos software de verdad y documentamos cómo lo hicimos.',
+      // Terminal animada al lado del título (estilos en custom.css, sección "Hero").
+      // --n = cantidad de caracteres de la línea: define cuánto dura el tipeo.
+      image: {
+        html: `<div class="terminal" aria-hidden="true">
+  <div class="terminal-barra"><span></span><span></span><span></span></div>
+  <p class="linea" style="--n:15;--d:0.3s">$ stats --help</p>
+  <p class="linea" style="--n:31;--d:1.6s">$ docker build -t vin-decoder .</p>
+  <p class="linea" style="--n:22;--d:3.6s">$ kubectl apply -f k8s</p>
+  <p class="linea ok" style="--n:15;--d:5.3s">✓ deploy listo</p>
+</div>`,
+      },
       actions: [
         { text: 'Ver proyectos', link: `${base}proyectos/`, icon: 'right-arrow' },
         { text: 'Conocer al equipo', link: '#equipo', variant: 'minimal' },
@@ -84,7 +95,7 @@ const destacados = await getCollection('proyectos', (p) => p.data.destacado);
   <h2 id="contacto">Contacto</h2>
   <p>
     Nuestro código está en <a href="https://github.com/stack-dos">GitHub (@stack-dos)</a>. Para
-    escribirnos, cada integrante tiene su mail y LinkedIn en su tarjeta del
+    escribirnos, cada integrante tiene su mail y LinkedIn en su tarjeta del{' '}
     <a href="#equipo">equipo</a> y en su CV.
   </p>
 </StarlightPage>
