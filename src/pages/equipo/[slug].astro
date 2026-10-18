@@ -1,0 +1,70 @@
+---
+// Página /equipo/<slug>/ (US-402): el CV de cada integrante.
+// Los corchetes del nombre del archivo hacen que Astro genere una página por integrante:
+// getStaticPaths() devuelve la lista, y cada una recibe su entrada como prop.
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { LinkButton } from '@astrojs/starlight/components';
+
+export async function getStaticPaths() {
+  const integrantes = await getCollection('integrantes');
+  // `id` = nombre del archivo sin .md ('nicolas-pinera') → URL /equipo/nicolas-pinera/
+  return integrantes.map((integrante) => ({
+    params: { slug: integrante.id },
+    props: { integrante },
+  }));
+}
+
+const { integrante } = Astro.props;
+const { nombre, rol, foto, email, linkedin, github, cv_pdf } = integrante.data;
+// `Content` es el cuerpo Markdown del archivo (el CV), listo para dibujar.
+const { Content } = await render(integrante);
+
+// cv_pdf se guarda sin la base ('/cv/x.pdf'); BASE_URL = '/porfolio_stack-dos'.
+const urlPdf = cv_pdf && `${import.meta.env.BASE_URL.replace(/\/$/, '')}${cv_pdf}`;
+// Iniciales para el avatar cuando no hay foto: 'Nicolas Piñera' → 'NP'.
+const iniciales = nombre
+  .split(' ')
+  .map((parte) => parte[0])
+  .join('')
+  .slice(0, 2);
+---
+
+<StarlightPage
+  frontmatter={{ title: nombre, description: `CV de ${nombre} — ${rol}`, template: 'splash' }}
+>
+  <section class="cv-encabezado">
+    {foto ? (
+      <Image src={foto} alt={`Foto de ${nombre}`} width={128} height={128} class="cv-avatar" />
+    ) : (
+      <div class="cv-avatar" aria-hidden="true">
+        {iniciales}
+      </div>
+    )}
+    <div>
+      <p class="cv-rol">{rol}</p>
+      <ul class="cv-contacto">
+        <li>
+          <a href={`mailto:${email}`}>{email}</a>
+        </li>
+        <li>
+          <a href={linkedin}>LinkedIn</a>
+        </li>
+        <li>
+          <a href={github}>GitHub</a>
+        </li>
+      </ul>
+      <!-- print:hidden (clase de Starlight): el botón no sale al imprimir -->
+      {urlPdf && (
+        <div class="print:hidden">
+          <LinkButton href={urlPdf} icon="download" iconPlacement="start">
+            Descargar CV (PDF)
+          </LinkButton>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <Content />
+</StarlightPage>

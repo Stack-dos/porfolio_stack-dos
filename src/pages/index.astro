@@ -1,0 +1,90 @@
+---
+// Landing "Quiénes somos" (US-401), ruta /.
+// Equipo y proyectos destacados salen de las colecciones: no hay datos hardcodeados.
+// Para cambiar los textos fijos (Qué hacemos, Cómo trabajamos) se edita este archivo.
+import { getCollection } from 'astro:content';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import TarjetaIntegrante from '../components/TarjetaIntegrante.astro';
+import TarjetaProyecto from '../components/TarjetaProyecto.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const integrantes = await getCollection('integrantes');
+const destacados = await getCollection('proyectos', (p) => p.data.destacado);
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Stack-dos',
+    description:
+      'Dos estudiantes de ingeniería construyendo y documentando proyectos de verdad: portfolio, CVs y wiki de nuestras apps.',
+    template: 'splash',
+    // El hero de Starlight: título grande, bajada y botones.
+    hero: {
+      tagline: 'Dos estudiantes de ingeniería construyendo y documentando proyectos de verdad.',
+      actions: [
+        { text: 'Ver proyectos', link: `${base}proyectos/`, icon: 'right-arrow' },
+        { text: 'Conocer al equipo', link: '#equipo', variant: 'minimal' },
+      ],
+    },
+  }}
+>
+  <h2 id="que-hacemos">Qué hacemos</h2>
+  <CardGrid>
+    <Card title="Backend y APIs" icon="laptop">
+      Servicios en Python y Go, APIs REST y microservicios pensados para integrarse con otros
+      sistemas.
+    </Card>
+    <Card title="Datos y estadística" icon="seti:db">
+      Modelado relacional en SQLite y PostgreSQL, y análisis con Pandas para convertir datos crudos
+      en métricas útiles.
+    </Card>
+    <Card title="DevOps e infraestructura" icon="rocket">
+      Docker, Kubernetes, pipelines de CI/CD y observabilidad: lo que hace falta para que el
+      software llegue a producción y se quede ahí.
+    </Card>
+    <Card title="Apps multiplataforma" icon="puzzle">
+      Una misma base de código para escritorio y mobile, reutilizando la lógica de negocio.
+    </Card>
+  </CardGrid>
+
+  <h2 id="como-trabajamos">Cómo trabajamos</h2>
+  <CardGrid>
+    <Card title="Plan antes que código" icon="document">
+      Cada proyecto arranca con un PRD (hitos, historias de usuario, criterios de aceptación) y cada
+      decisión técnica queda registrada en un ADR.
+    </Card>
+    <Card title="Arquitectura limpia" icon="setting">
+      Capas desacopladas (Clean / Hexagonal): el dominio no depende de la base ni de la interfaz, y
+      todo se puede testear de forma aislada.
+    </Card>
+    <Card title="CI estricto y tests" icon="approve-check">
+      Cada cambio pasa por lint, chequeo de tipos, tests con cobertura mínima y auditoría de
+      seguridad antes de poder mergearse.
+    </Card>
+  </CardGrid>
+
+  <h2 id="equipo">Equipo</h2>
+  <div class="grilla-proyectos">
+    {integrantes.map((i) => (
+      <TarjetaIntegrante integrante={i} />
+    ))}
+  </div>
+
+  <h2 id="proyectos">Proyectos destacados</h2>
+  <div class="grilla-proyectos">
+    {destacados.map((p) => (
+      <TarjetaProyecto proyecto={p} />
+    ))}
+  </div>
+  <p>
+    <a href={`${base}proyectos/`}>Ver todos los proyectos →</a>
+  </p>
+
+  <h2 id="contacto">Contacto</h2>
+  <p>
+    Nuestro código está en <a href="https://github.com/stack-dos">GitHub (@stack-dos)</a>. Para
+    escribirnos, cada integrante tiene su mail y LinkedIn en su tarjeta del
+    <a href="#equipo">equipo</a> y en su CV.
+  </p>
+</StarlightPage>
